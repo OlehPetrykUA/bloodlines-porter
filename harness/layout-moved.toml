@@ -1,0 +1,5 @@
+[modules.vstdlib]
+base = 0x14000000
+
+[runtime]
+data_cells = 0x00031000

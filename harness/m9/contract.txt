@@ -1,0 +1,77 @@
+M9 test contract: what `X --m9-selftest <case>` and `X --gfx-selftest` hand to harness/m9.py.
+harness/m9.py is the judge. Where a G piece disagrees, change this file and m9.py together, never one alone.
+
+Command line
+  T = X --m9-selftest <case> [--player] --overlay O [case flags]
+  Files go to O/m9/. Result lines go to stdout or stderr, one per line:
+    m9 <case> <label> key=value key=value ...
+  A value with a space is quoted. Exit 0 when the case ran, whatever the numbers say; H judges them.
+  X --gfx-selftest --overlay O reads O/settings.txt (H writes it) and writes every PNG under O/.
+  Toggle names, in id order: overlays picture aspect. Aspect is a launch-time setting with no key, menu row or overlay row.
+  Aspect steps: 16:9 fit 21:9 engine (the ratios are in harness/m9.py ASPECTS; 21:9 is 43:18 so it fills 3440x1440).
+
+menu          O/m9/menu.tsv
+  header line: kind<TAB>title<TAB>key<TAB>mask<TAB>enabled<TAB>tooltip
+  `menu<TAB>title` opens a menu, `item<TAB>title<TAB>key<TAB>mask<TAB>enabled<TAB>tooltip` adds an item, a separator has title "-".
+  Menus in bar order: app menu, Game. No FPS menu in any mode. Game holds Overlays (1), Picture mode (2), nothing else. Mask is the integer modifier mask (Command = 1048576).
+  `menu --player` writes the same file as `menu`.
+
+input         rows: input chord1..chord8 name=<toggle or -> toggles=<n> guest_keys=<n> guest_chars=<n> dev=<0|1>   (cmd-1 and cmd-2 toggle; cmd-3 to cmd-8 do nothing, dev=0)
+                    input bare1..bare8 toggles=<n> guest_keys=<n> guest_chars=<n>
+                    input both name=overlays toggles=<n>      (menu action and SDL chord in one pump)
+                    input capture-default relative=<0|1> cursor=<0|1>
+              log:  rt: toggle <name> <old> -> <new> (chord|menu|settings)
+                    rt: toggle <name> unavailable (<reason>)
+live          rows: live overlays|picture changed=<0|1>,
+                    live dead-keys (cmd-4 to cmd-8) toggles=<n> ok=<0|1>, live result bad=<0|1>   (--player too)
+fps           rows: fps steady|spike|interp title=<text> p50=<ms> p99=<ms>   (series: harness/m9.py fps_series)
+overlay       O/m9/overlay-<state>.png and .tsv for state all, all2, fps, off
+              png: 1280x1024, background (17,34,51); tsv: one text line per box line, UTF-8, no header
+              all = the inputs and toggles in harness/m9.py OVERLAY_A, all2 = OVERLAY_B, fps = OVERLAY_A first line only, off = nothing
+settings      rows: settings roundtrip-<toggle> wrote=<v> read=<v>        (values: harness/m9.py NONDEFAULT)
+                    settings defaults-run|defaults-player <toggle>=<v> ... (all four; interp, smoothing, hdr, controller and aniso lines of an old file are ignored: settings dropped-keys warn_lines=0)
+                    settings unknown-name unknown_lines=<n> <toggle>=<v> ...
+                    settings bad-value bad_name=<toggle> bad_lines=<n> <toggle>=<v> ...
+                    settings no-file <toggle>=<v> ...
+                    settings readonly readonly_lines=<n> survived=<0|1>
+                    settings dxvk-set|dxvk-user value=<DXVK_CONFIG string> [user=<string> kept=<0|1>]
+aspect        rows: aspect parse input=<s> kind=<ratio|fit|engine|size|bad>
+                    aspect size state=<step> win=<W>x<H> out=<W>x<H>
+                    aspect next from=<step> ratio=<float> to=<step>
+                    aspect hfov vfov=<deg> w=<n> h=<n> out=<deg>
+                    aspect proj ratio=<4:3|16:9|21:9> vfov=<deg> hfov=<deg>    (the engine projection, when Q4 finds it)
+                    aspect rect bw=<n> bh=<n> dx=<n> dy=<n> dw=<n> dh=<n> within=<W>x<H>
+controller    rows: controller type name=<string> type=<xbox|playstation|default>
+fx            rows: fx support spatial=<0|1> temporal=<0|1> interpolator=<0|1> metal4fx=<0|1>
+                    fx cycle mask=<0|5|7> start=<value> seq="<value after each cmd-2>" back=<0|1> native=<0|1> reason="<string>"
+                    (start=off always: MetalFX is opt-in until G6b; native=1 only with the engine override; then mask=7 and seq="metalfx native off", else mask=5 and seq="metalfx off")
+              log:  rt: fx support spatial <n> temporal <n> interpolator <n> metal4fx <n>
+                    rt: fx unsupported <spatial|temporal|interpolator> (<reason>)    with RT_FX_FORCE_UNSUPPORTED=1
+fx-spatial    O/m9/card.png (what dxvk drew), spatial-2560x2048.png, spatial-1800x1440.png
+              rows: fx-spatial card patch=<x,y,w,h> rgb=<r,g,b> lines=<x,y,w,h>     (source pixels)
+              exit log: rt: fx frames <n> scaled <n> smoothed <n> interpolated <n> passthrough <n> added p50 <ms> p99 <ms>
+fx-route      rows: fx-route step name=<interop|proc|export|alloc|bind|bytes> ok=<0|1>
+              log:  rt: fx route r1 unavailable (<reason>)    when any step fails; R3 stays, exit 0
+fx-taa        O/m9/taa-off-NN.png and taa-on-NN.png, NN = 00..63, grey (r=g=b) 128x128; scene: harness/m9.py TAA
+reproject     O/m9/reproject.json {w,h,cur,prev}, reproject-depth.f32 (w*h little-endian float32, D3D 0..1), reproject-motion.f32 (w*h*2 floats, pixels)
+              matrices: 16 floats, row-major, column vectors, clip = M * (x y z 1), D3D depth 0..1, pixel y down
+              motion = previous pixel position minus current pixel position (Apple MTLFXTemporalScalerBase.motionVectorScaleX)
+fx-interp     O/m9/interp-prev.png, interp-next.png, interp-mid.png, interp-hud.png
+              rows: fx-interp scene hud=<x,y,w,h>     background grey 32, bright square, HUD rectangle
+present-queue O/m9/queue.tsv: tick_ns<TAB>kind<TAB>id, kind real|made; frames arrive at id*10 ms, ticks at 165 Hz; 60 ticks or more
+              rows: present-queue fps title=<N+N FPS>
+hdr           rows: hdr enable headroom=<x> enabled=<0|1>
+                    hdr ramp headroom=<x> file=<name>      (file: x<TAB>y lines, x = i/255, i = 0..255)
+vfs           rows: vfs loose-over-vpk source=<loose|vpk> sha1=<hex>      (query differs in letter case from the stored name)
+                    vfs vpk-only source=<loose|vpk> sha1=<hex>
+
+gfx-selftest runs (H writes settings.txt, each run gets a fresh O)
+  overlays=all and overlays=off      every PNG under O is byte-identical between the two
+  aspect=3440x1440                   row-free: PNG mode-3440x1440.png is 3440x1440; line `m9 gfx mode-3440x1440 enum=<0|1> created=<0|1>`
+  reset                              two rows, there and back: `m9 gfx reset from=1280x1024 to=3440x1440 ok=<0|1> released=<0|1>`
+                                     and `m9 gfx reset from=3440x1440 to=1280x1024 ok=<0|1> released=<0|1>`; no row fails
+  camera                             `m9 gfx camera frames=<n> found=<n> passthrough=<n>`
+  cut                                `m9 gfx cut first2d=<n> cut=<n>` and `m9 gfx cut-none cut=-1 passthrough=<0|1>`
+  hdr                                `m9 gfx hdr max=<float> spaces=<n>`
+
+Limits of this contract: the numbers (sizes, patch, tolerances) live in harness/m9.py and are the knobs of Q9.

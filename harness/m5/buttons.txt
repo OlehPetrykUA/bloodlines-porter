@@ -1,0 +1,11 @@
+wait menu
+sleep 3
+move @$button
+sleep 0.5
+click left
+sleep 3
+capture $button-screen
+$back
+sleep 2
+capture $button-back
+sleep 1

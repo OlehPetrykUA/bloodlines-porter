@@ -1,0 +1,13 @@
+wait map
+sleep 3
+key f9
+sleep 3
+capture q0
+keydown w
+sleep 2
+keyup w
+sleep 1
+key f12
+wait map
+sleep 2
+capture q1

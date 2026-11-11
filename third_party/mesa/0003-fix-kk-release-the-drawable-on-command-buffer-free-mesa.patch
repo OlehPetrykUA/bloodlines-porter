@@ -1,0 +1,26 @@
+From fa25935b47d992eae978c628ea4fcff75fd2dc1f Mon Sep 17 00:00:00 2001
+From: Bloodlines Porter <noreply@invalid>
+Date: Sat, 7 Nov 2026 20:40:00 +0200
+Subject: [PATCH 3/3] fix(kk): release the drawable on command buffer free
+ (mesa fa25935b)
+
+---
+ src/kosmickrisp/vulkan/kk_cmd_buffer.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/kosmickrisp/vulkan/kk_cmd_buffer.c b/src/kosmickrisp/vulkan/kk_cmd_buffer.c
+--- a/src/kosmickrisp/vulkan/kk_cmd_buffer.c
++++ b/src/kosmickrisp/vulkan/kk_cmd_buffer.c
+@@ -76,6 +76,9 @@ kk_destroy_cmd_buffer(struct vk_command_buffer *vk_cmd_buffer)
+       container_of(vk_cmd_buffer, struct kk_cmd_buffer, vk);
+    struct kk_cmd_pool *pool = kk_cmd_buffer_pool(cmd);
+
++   if (cmd->drawable)
++      mtl_release(cmd->drawable);
++
+    mtl_release(cmd->argument_table);
+    kk_destroy_encoder_state(&cmd->cmp[0]);
+    kk_destroy_encoder_state(&cmd->cmp[1]);
+--
+2.54.0
+

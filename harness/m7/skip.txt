@@ -1,0 +1,5 @@
+wait bink 1 $frames
+key space
+wait bink 2 $frames
+click left
+sleep 40

@@ -1,0 +1,481 @@
+[[row]]
+id = "fix_paths_a"
+owner = "up"
+switch = ["Bugs/Fix Paths"]
+module = "FileSystem_Stdio"
+rva = 0x3f33
+kind = "bytes"
+old = "5c"
+new = "2f"
+
+[[row]]
+id = "fix_paths_b"
+owner = "up"
+switch = ["Bugs/Fix Paths"]
+module = "FileSystem_Stdio"
+rva = 0x3f40
+kind = "bytes"
+old = "5c"
+new = "2f"
+
+[[row]]
+id = "floats_female"
+owner = "up"
+switch = ["Bugs/Floats For Female Fix"]
+module = "vampire"
+rva = 0x1f463c
+kind = "bytes"
+old = "75"
+new = "eb"
+
+[[row]]
+id = "model_lods"
+owner = "up"
+switch = ["Bugs/Fix Model LODs"]
+module = "engine"
+rva = 0xa6791
+kind = "bytes"
+old = "01"
+new = "00"
+
+[[row]]
+id = "save_speed_a"
+owner = "up"
+switch = ["Tweaks/Improve Save Speed"]
+module = "engine"
+rva = 0x985fa
+kind = "bytes"
+old = "09"
+new = "01"
+
+[[row]]
+id = "save_speed_b"
+owner = "up"
+switch = ["Tweaks/Improve Save Speed"]
+module = "engine"
+rva = 0x9896a
+kind = "bytes"
+old = "09"
+new = "01"
+
+[[row]]
+id = "save_speed_c"
+owner = "up"
+switch = ["Tweaks/Improve Save Speed"]
+module = "engine"
+rva = 0xc53af
+kind = "bytes"
+old = "09"
+new = "01"
+
+[[row]]
+id = "ragdolls"
+owner = "up"
+switch = ["Tweaks/Non-Solid Ragdolls", "vtmb-tweaks/bNonSolidRagdolls"]
+module = "vampire"
+rva = 0x154e90
+kind = "bytes"
+old = "c1e90283e101"
+new = "b90100000090"
+
+[[row]]
+id = "histories"
+owner = "up"
+switch = ["Bugs/Fix Histories"]
+module = "client"
+rva = 0x57dc0
+kind = "jmp"
+old = "568b35500d4a10"
+abs = 3
+cell = 1
+pop = 0
+thunk = "50{call}58{disp}{resume}"
+
+[[row]]
+id = "coronas_lights"
+owner = "up"
+switch = ["Bugs/No Coronas Fix", "Bugs/Lights Through Walls Fix"]
+module = "engine"
+rva = 0x65dc2
+kind = "jmp"
+old = "5150ff5740"
+cell = 2
+pop = 1
+thunk = "5050{call}58{disp}{resume}"
+
+[[row]]
+id = "claws_stats"
+owner = "up"
+switch = ["Bugs/Fix Claws Stats"]
+module = "client"
+rva = 0x1853a8
+kind = "call"
+old = "e833d50500"
+cell = 3
+pop = 0
+thunk = "{jmp}"
+
+[[row]]
+id = "shadows_rebuild"
+owner = "up"
+switch = ["Bugs/Force Shadows Rebuild"]
+module = "client"
+rva = 0xd7f60
+kind = "jmp"
+old = "390504f04c10"
+abs = 2
+cell = 4
+pop = 1
+thunk = "5050{call}{disp}58{resume}"
+
+[[row]]
+id = "fov_reset_parse"
+owner = "up"
+switch = ["Tweaks/FOV Reset Fix", "vtmb-tweaks/Enabled"]
+module = "vampire"
+rva = 0xd2dc1
+kind = "call"
+old = "e881e63500"
+cell = 5
+pop = 0
+thunk = "{jmp}"
+
+[[row]]
+id = "fov_reset_store"
+owner = "up"
+switch = ["Tweaks/FOV Reset Fix", "vtmb-tweaks/Enabled"]
+module = "vampire"
+rva = 0x239e01
+kind = "jmp"
+old = "899f781e0000"
+cell = 6
+pop = 1
+thunk = "5053{call}8987781e000058{resume}"
+
+[[row]]
+id = "no_tracers"
+owner = "vtmb-tweaks"
+switch = ["Tweaks/No Bullet Tracers", "vtmb-tweaks/bNoTracers"]
+module = "client"
+rva = 0x4099a
+kind = "bytes"
+old = "0f84af000000"
+new = "e9b000000000"
+
+[[row]]
+id = "protean_warform_b"
+owner = "protean-improved"
+switch = ["protean-improved/Warform Frenzy"]
+module = "vampire"
+rva = 0x33ed75
+kind = "bytes"
+old = "74"
+new = "eb"
+
+[[row]]
+id = "door_fps_b"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bFixDoorsAtHighFPS"]
+module = "vampire"
+rva = 0xf3a66
+kind = "bytes"
+old = "8b8e0807000041"
+new = "b9020000009090"
+
+[[row]]
+id = "door_fps_a"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bFixDoorsAtHighFPS"]
+module = "vampire"
+rva = 0xdab2
+kind = "jmp"
+old = "e9293d1b00"
+cell = 7
+pop = 2
+thunk = "{jmp}"
+
+[[row]]
+id = "hist_stat_a"
+owner = "history-stat-reset-fix"
+switch = ["history-stat-reset-fix/Enabled"]
+module = "vampire"
+rva = 0xd6dd8
+kind = "jmp"
+old = "5f5e5b81c4a0000000"
+cell = 8
+pop = 0
+thunk = "{call}{disp}{resume}"
+
+[[row]]
+id = "hist_stat_c"
+owner = "history-stat-reset-fix"
+switch = ["history-stat-reset-fix/Enabled"]
+module = "vampire"
+rva = 0xd6deb
+kind = "jmp"
+old = "5f5e5b81c4a0000000"
+cell = 9
+pop = 0
+thunk = "{call}{disp}{resume}"
+
+[[row]]
+id = "hist_stat_b"
+owner = "history-stat-reset-fix"
+switch = ["history-stat-reset-fix/Enabled"]
+module = "vampire"
+rva = 0x206ad1
+kind = "jmp"
+old = "3bdd0f84f6000000"
+cell = 10
+pop = 0
+thunk = "50{call}83f801580f84{rel:0x206ad9}3bdd0f84{rel:0x206bcf}e9{rel:0x206ad9}"
+
+[[row]]
+id = "model_loader"
+owner = "model-loader-fix"
+switch = ["model-loader-fix/Enable Model Loader Fix"]
+module = "engine"
+rva = 0xb87a0
+kind = "jmp"
+old = "53558b6c240c56"
+cell = 11
+pop = 0
+thunk = "{call}c20400{entry}{disp}{resume}"
+
+[[row]]
+id = "console_open"
+owner = "console-pause-fix"
+switch = ["console-pause-fix/Enabled"]
+module = "engine"
+rva = 0x10dc10
+kind = "jmp"
+old = "8b0da4643021"
+abs = 2
+cell = 12
+pop = 0
+thunk = "{call}c3{entry}{disp}{resume}"
+
+[[row]]
+id = "console_cmd"
+owner = "console-pause-fix"
+switch = ["console-pause-fix/Enabled"]
+module = "engine"
+rva = 0x1a570
+kind = "jmp"
+old = "8b44240450"
+cell = 13
+pop = 0
+thunk = "{call}c20400{entry}{disp}{resume}"
+
+[[row]]
+id = "console_close"
+owner = "console-pause-fix"
+switch = ["console-pause-fix/Enabled"]
+module = "gameui"
+rva = 0x22070
+kind = "jmp"
+old = "8b44240456"
+cell = 14
+pop = 0
+thunk = "{call}c20400{entry}{disp}{resume}"
+
+[[row]]
+id = "console_menu"
+owner = "console-pause-fix"
+switch = ["console-pause-fix/Enabled"]
+module = "gameui"
+rva = 0x59d0
+kind = "jmp"
+old = "568bf18b0d30c30610"
+abs = 5
+cell = 15
+pop = 0
+thunk = "{call}c20400{entry}{disp}{resume}"
+
+[[row]]
+id = "tw_nodoor"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bNoDoorAutoClose"]
+module = "vampire"
+rva = 0xf09eb
+kind = "jmp"
+old = "8b066a018b"
+cell = 17
+pop = 0
+thunk = "{call}5ec3"
+
+[[row]]
+id = "tw_drop"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bNPCsDropAllWeapons"]
+module = "vampire"
+rva = 0x32ba84
+kind = "call"
+old = "e883a3cdff"
+cell = 18
+pop = 0
+thunk = "{jmp}"
+
+[[row]]
+id = "tw_stack_find"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bStackableWeapons"]
+module = "vampire"
+rva = 0x17724e
+kind = "call"
+old = "e865dfe9ff"
+cell = 19
+pop = 2
+thunk = "{jmp}"
+
+[[row]]
+id = "tw_stack_pick"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bStackableWeapons"]
+module = "vampire"
+rva = 0x17788c
+kind = "call"
+old = "e845c0e9ff"
+cell = 20
+pop = 1
+thunk = "{jmp}"
+
+[[row]]
+id = "tw_stack_skip"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bStackableWeapons"]
+module = "vampire"
+rva = 0x32d142
+kind = "jmp"
+old = "8b078bcfff9008060000"
+cell = 21
+pop = 0
+thunk = "{call}85c00f84{rel:0x32d16f}{disp}{resume}"
+
+[[row]]
+id = "tw_altf4"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bEnableAltF4"]
+module = "engine"
+rva = 0xa38ee
+kind = "jmp"
+old = "a11035d620"
+abs = 1
+cell = 16
+pop = 0
+thunk = "{call}ffe0{mark:0xa3bc7}"
+cave = 0xa3c41
+cave_thunk = "{disp}{resume}"
+
+[[row]]
+id = "tw_corpse_think"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bNoCorpseDespawn"]
+module = "vampire"
+rva = 0x265d72
+kind = "call"
+old = "e8f0b8daff"
+cell = 22
+pop = 0
+thunk = "{jmp}"
+
+[[row]]
+id = "tw_corpse_fade"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bNoCorpseDespawn"]
+module = "vampire"
+rva = 0x2696f0
+kind = "jmp"
+old = "5356578bf9"
+cell = 23
+pop = 0
+thunk = "{call}85c07401c3{disp}{resume}"
+
+[[row]]
+id = "tw_corpse_mark"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bNoCorpseDespawn"]
+module = "vampire"
+rva = 0x32c40f
+kind = "call"
+old = "e8d1bbcdff"
+cell = 24
+pop = 3
+thunk = "{jmp}"
+
+[[row]]
+id = "tw_corpse_clear"
+owner = "vtmb-tweaks"
+switch = ["vtmb-tweaks/bNoCorpseDespawn"]
+module = "vampire"
+rva = 0x46251c
+kind = "ptr"
+old = "02b80010"
+abs = 0
+target = 0xb802
+cell = 25
+pop = 0
+thunk = "{jmp}"
+
+[[row]]
+id = "cs_hide"
+owner = "container-stack-fix"
+switch = ["container-stack-fix/Enabled"]
+module = "vampire"
+rva = 0xda3cb
+kind = "jmp"
+old = "0f8486000000"
+cell = 26
+pop = 0
+thunk = "0f84{rel:0xda457}60{call}85c0617405c644241000{resume}"
+
+[[row]]
+id = "cs_give"
+owner = "container-stack-fix"
+switch = ["container-stack-fix/Enabled"]
+module = "client"
+rva = 0x16dfa4
+kind = "jmp"
+old = "8b4424348a888101000084c9"
+cell = 27
+pop = 0
+thunk = "8b4424348a888101000084c90f85{rel:0x16dfb6}60{call}85c0610f85{rel:0x16dfb6}e9{rel:0x16e6b7}"
+
+[[row]]
+id = "cs_owned"
+owner = "container-stack-fix"
+switch = ["container-stack-fix/Enabled"]
+module = "client"
+rva = 0x16fe4a
+kind = "jmp"
+old = "8a44241384c00f85aa000000"
+cell = 28
+pop = 0
+thunk = "60{call}85c0617405c6442413018a44241384c00f85{rel:0x16ff00}{resume}"
+
+[[row]]
+id = "cs_keys"
+owner = "container-stack-fix"
+switch = ["container-stack-fix/Enabled"]
+module = "client"
+rva = 0x24aa90
+kind = "ptr"
+old = "60431b10"
+abs = 0
+target = 0x1b4360
+cell = 29
+pop = 1
+thunk = "{jmp}"
+
+[[row]]
+id = "cs_barter"
+owner = "container-stack-fix"
+switch = ["container-stack-fix/Enabled"]
+module = "client"
+rva = 0x102150
+kind = "jmp"
+old = "6a0068a42f4d10"
+abs = 3
+cell = 30
+pop = 0
+thunk = "{jmp}"

@@ -1,0 +1,10 @@
+wait map
+sleep 5
+keydown w
+sleep 0.5
+chord tab
+sleep 0.5
+chord a
+sleep 0.5
+keyup w
+sleep 1

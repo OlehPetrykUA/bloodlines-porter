@@ -1,0 +1,6 @@
+wait map sp_tutorial_1
+sleep 15
+capture dialogue-1
+key 1
+sleep 3
+capture dialogue-2

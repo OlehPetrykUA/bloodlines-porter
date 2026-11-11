@@ -1,0 +1,12 @@
+wait menu
+sleep 3
+capture idle
+sleep 1
+move @newgame
+sleep 1
+capture hover
+sleep 1
+move @empty
+sleep 1
+capture away
+sleep 1

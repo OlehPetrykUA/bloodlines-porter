@@ -1,0 +1,11 @@
+$intro
+capture menu-player-a
+sleep 1
+chord 8
+sleep 2
+capture dev-on
+sleep 1
+chord 8
+sleep 2
+capture dev-off
+sleep 1

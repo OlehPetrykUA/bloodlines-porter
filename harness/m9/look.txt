@@ -1,0 +1,123 @@
+wait map
+focus gained
+sleep 3
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2
+look 30 0
+sleep 0.2

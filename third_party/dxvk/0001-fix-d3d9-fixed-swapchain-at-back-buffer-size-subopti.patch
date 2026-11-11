@@ -1,0 +1,56 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Bloodlines Porter <noreply@invalid>
+Date: Thu, 5 Nov 2026 12:53:48 +0200
+Subject: [PATCH] fix(d3d9): fixed swapchain at back buffer size, suboptimal is
+ success
+
+---
+ src/d3d9/d3d9_swapchain.cpp | 7 ++++++-
+ src/dxvk/dxvk_presenter.cpp | 6 +++---
+ 2 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/src/d3d9/d3d9_swapchain.cpp b/src/d3d9/d3d9_swapchain.cpp
+index d672f115..17082ae5 100644
+--- a/src/d3d9/d3d9_swapchain.cpp
++++ b/src/d3d9/d3d9_swapchain.cpp
+@@ -1344,7 +1344,12 @@ namespace dxvk {
+     }
+     
+     UINT width, height;
+-    wsi::getWindowSize(m_window, &width, &height);
++    if (isWindowed) {
++      width  = m_presentParams.BackBufferWidth;
++      height = m_presentParams.BackBufferHeight;
++    } else {
++      wsi::getWindowSize(m_window, &width, &height);
++    }
+ 
+     RECT dstRect;
+     if (pDestRect == nullptr || !isWindowed) {
+diff --git a/src/dxvk/dxvk_presenter.cpp b/src/dxvk/dxvk_presenter.cpp
+index 643f7c5d..62b82083 100644
+--- a/src/dxvk/dxvk_presenter.cpp
++++ b/src/dxvk/dxvk_presenter.cpp
+@@ -265,6 +265,9 @@ namespace dxvk {
+     VkResult status = m_vkd->vkQueuePresentKHR(
+       m_device->queues().graphics.queueHandle, &info);
+ 
++    if (status == VK_SUBOPTIMAL_KHR)
++      status = VK_SUCCESS;
++
+     // Treat a QUEUE_FULL error as a hint to recreate the swapchain with
+     // a larger queue size. This could probably be done more robustly,
+     // but since we have latency constraints in the frontend APIs, we
+@@ -1283,9 +1286,6 @@ namespace dxvk {
+   VkExtent2D Presenter::pickImageExtent(
+     const VkSurfaceCapabilitiesKHR& caps,
+           VkExtent2D                desired) {
+-    if (caps.currentExtent.width != std::numeric_limits<uint32_t>::max())
+-      return caps.currentExtent;
+-
+     VkExtent2D actual;
+     actual.width  = clamp(desired.width,  caps.minImageExtent.width,  caps.maxImageExtent.width);
+     actual.height = clamp(desired.height, caps.minImageExtent.height, caps.maxImageExtent.height);
+-- 
+2.54.0
+

@@ -1,0 +1,31 @@
+From 32c4118a25b4ef1829887dc2a2e85bb9d1442922 Mon Sep 17 00:00:00 2001
+From: Bloodlines Porter <noreply@invalid>
+Date: Fri, 6 Nov 2026 22:44:40 +0200
+Subject: [PATCH] fix(dxvk): zero sampled color images by copy, not a clear per
+ mip
+
+---
+ src/dxvk/dxvk_context.cpp | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/src/dxvk/dxvk_context.cpp b/src/dxvk/dxvk_context.cpp
+index 6692c215..6611dc21 100644
+--- a/src/dxvk/dxvk_context.cpp
++++ b/src/dxvk/dxvk_context.cpp
+@@ -1040,7 +1040,12 @@ namespace dxvk {
+       auto formatInfo = image->formatInfo();
+       auto bufferInfo = image->storage()->getBufferInfo();
+ 
+-      if (!formatInfo->flags.any(DxvkFormatFlag::BlockCompressed, DxvkFormatFlag::MultiPlane)) {
++      VkImageUsageFlags usage = image->info().usage;
++      bool sampledOnly = (formatInfo->aspectMask == VK_IMAGE_ASPECT_COLOR_BIT)
++        && !(usage & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
++        && (usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT);
++
++      if (!sampledOnly && !formatInfo->flags.any(DxvkFormatFlag::BlockCompressed, DxvkFormatFlag::MultiPlane)) {
+         // Clear commands can only happen on the graphics queue
+         VkImageLayout clearLayout = image->pickLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+ 
+-- 
+2.54.0
+

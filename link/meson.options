@@ -1,0 +1,3 @@
+option('gen_root', type: 'string')
+option('prebuilt', type: 'boolean', value: false)
+option('prebuilt_prefix', type: 'string', value: '/opt/homebrew')

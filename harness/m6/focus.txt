@@ -1,0 +1,11 @@
+wait map
+sleep 5
+keydown w
+sleep 0.5
+focus lost
+sleep 2
+focus gained
+sleep 1
+capture f1
+sleep 2
+capture f2

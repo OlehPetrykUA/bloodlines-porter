@@ -1,0 +1,54 @@
+{
+  "python_build": "20261026",
+  "libs": {
+    "openssl": {
+      "version": "3.5.9",
+      "spdx": "Apache-2.0",
+      "found_in": "libpython3.13.dylib string 'OpenSSL 3.5.9 29 Sep 2026' and ssl.OPENSSL_VERSION of the bundled python",
+      "text_from": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.5.9/LICENSE.txt (upstream tag openssl-3.5.9)",
+      "sha256": "7d5450cb2d142651b8afa315b5f238efc805dad827d91ba367d8516bc9d49e7a"
+    },
+    "expat": {
+      "version": "2.9.0",
+      "spdx": "MIT",
+      "found_in": "libpython3.13.dylib string 'expat_2.9.0' and pyexpat.EXPAT_VERSION of the bundled python",
+      "text_from": "https://raw.githubusercontent.com/libexpat/libexpat/R_2_9_0/expat/COPYING (upstream tag R_2_9_0)",
+      "sha256": "31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87"
+    },
+    "mpdecimal": {
+      "version": "4.0.0",
+      "spdx": "BSD-2-Clause",
+      "found_in": "decimal.__libmpdec_version__ of the bundled python",
+      "text_from": "COPYRIGHT.txt of the mpdecimal 4.0.1 package; not compared with the 4.0.0 release tarball (https://www.bytereef.org/software/mpdecimal/releases/mpdecimal-4.0.0.tar.gz, sha256 942445c3245b22730fd41a67a7c5c231d11cb1b9936b9c0f76334fb7d0b4468c)",
+      "sha256": "dba079e24a0286052f9f36a5e0b4f6cc95bc83ada657eb26bef8c0b6473f6512"
+    },
+    "bzip2": {
+      "version": "1.0.8",
+      "spdx": "bzip2-1.0.6",
+      "found_in": "libpython3.13.dylib string '1.0.8, 13-Jul-2019'; python-build-standalone pythonbuild/downloads.json at tag 20261026 lists bzip2 1.0.8",
+      "text_from": "https://sourceware.org/git/?p=bzip2.git;a=blob_plain;f=LICENSE;hb=refs/tags/bzip2-1.0.8 (upstream tag bzip2-1.0.8)",
+      "sha256": "c6dbbf828498be844a89eaa3b84adbab3199e342eb5cb2ed2f0d4ba7ec0f38a3"
+    },
+    "libffi": {
+      "version": "3.8.0",
+      "spdx": "MIT",
+      "found_in": "libpython3.13.dylib string '3.8.0'; python-build-standalone pythonbuild/downloads.json at tag 20261026 lists libffi 3.8.0",
+      "text_from": "https://raw.githubusercontent.com/libffi/libffi/v3.8.0/LICENSE (upstream tag v3.8.0)",
+      "sha256": "17b64dc60f3b6897a60f971e288b973f655c2edcdf08b25f3c3dd5549857881c"
+    },
+    "liblzma": {
+      "version": "5.8.4",
+      "spdx": "0BSD",
+      "found_in": "libpython3.13.dylib string '5.8.4'; python-build-standalone pythonbuild/downloads.json at tag 20261026 lists xz 5.8.4",
+      "text_from": "https://raw.githubusercontent.com/tukaani-project/xz/v5.8.4/COPYING.0BSD (upstream tag v5.8.4)",
+      "sha256": "0b01625d853911cd0e2e088dcfb743261034a091bb379246cb25a14cc4c74bf1"
+    },
+    "sqlite": {
+      "version": "3.53.1",
+      "spdx": "blessing",
+      "found_in": "sqlite3.sqlite_version of the bundled python; python-build-standalone pythonbuild/downloads.json at tag 20261026 lists sqlite 3530100",
+      "text_from": "https://raw.githubusercontent.com/sqlite/sqlite/version-3.53.1/LICENSE.md (upstream tag version-3.53.1)",
+      "sha256": "ee6af51062b30d532991face5164136ae6f84e265ecf8abe89dc69dac45ca1e7"
+    }
+  }
+}

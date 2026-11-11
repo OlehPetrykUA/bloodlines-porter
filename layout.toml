@@ -1,0 +1,102 @@
+[modules.vstdlib]
+path = "Bin/vstdlib.dll"
+base = 0x10000000
+
+[modules.launcher]
+path = "Bin/launcher.dll"
+base = 0x10020000
+
+[modules.FileSystem_Stdio]
+path = "Bin/FileSystem_Stdio.dll"
+base = 0x10040000
+
+[modules.MaterialSystem]
+path = "Bin/MaterialSystem.dll"
+base = 0x10070000
+
+[modules.stdshader_dbg]
+path = "Bin/stdshader_dbg.dll"
+base = 0x10310000
+
+[modules.stdshader_dx6]
+path = "Bin/stdshader_dx6.dll"
+base = 0x10340000
+
+[modules.stdshader_dx7]
+path = "Bin/stdshader_dx7.dll"
+base = 0x10370000
+
+[modules.stdshader_dx8]
+path = "Bin/stdshader_dx8.dll"
+base = 0x10390000
+
+[modules.stdshader_dx9]
+path = "Bin/stdshader_dx9.dll"
+base = 0x103D0000
+
+[modules.tier0]
+path = "Bin/tier0.dll"
+base = 0x103F0000
+
+[modules.vgui2]
+path = "Bin/vgui2.dll"
+base = 0x10430000
+
+[modules.vguimatsurface]
+path = "Bin/vguimatsurface.dll"
+base = 0x10480000
+
+[modules.vaudio_miles]
+path = "Bin/vaudio_miles.dll"
+base = 0x104E0000
+
+[modules.client]
+path = "Vampire/cl_dlls/client.dll"
+base = 0x10500000
+
+[modules.gameui]
+path = "Vampire/cl_dlls/gameui.dll"
+base = 0x10BF0000
+
+[modules.vampire]
+path = "Vampire/dlls/vampire.dll"
+base = 0x10C70000
+
+[modules.zlib1]
+path = "Bin/zlib1.dll"
+base = 0x11730000
+
+[modules.vampire_python21]
+path = "Bin/vampire_python21.dll"
+base = 0x1E100000
+
+[modules.engine]
+path = "Bin/engine.dll"
+base = 0x20000000
+
+[modules.vphysics]
+path = "Bin/vphysics.dll"
+base = 0x26000000
+
+[modules.shaderapidx9]
+path = "Bin/shaderapidx9.dll"
+base = 0x2A000000
+
+[modules.StudioRender]
+path = "Bin/StudioRender.dll"
+base = 0x2C000000
+
+[modules.msvcrt]
+path = "Bin/msvcrt.dll"
+base = 0x78000000
+
+[stub_dlls]
+paths = ["Bin/binkw32.dll", "Bin/Mss32.dll", "dbghelp.dll"]
+
+[runtime]
+data_cells = 0x00031000
+
+[build]
+optimization1 = []
+chunk1 = []
+o0 = ["vampire/recomp_0903.c"]

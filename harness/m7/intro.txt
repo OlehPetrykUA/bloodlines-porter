@@ -1,0 +1,11 @@
+wait bink 1 $frames
+capture intro1
+wait bink 2 $frames
+capture intro2
+wait bink 3 $frames
+capture intro3
+wait bink 4 $frames
+capture intro4
+sleep 20
+capture menu-after-intro
+sleep 2

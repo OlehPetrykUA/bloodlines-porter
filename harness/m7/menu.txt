@@ -1,0 +1,3 @@
+wait menu
+sleep $len
+capture menu

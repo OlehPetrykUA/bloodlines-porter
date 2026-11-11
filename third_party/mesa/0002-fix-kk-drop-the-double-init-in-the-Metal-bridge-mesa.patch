@@ -1,0 +1,72 @@
+From 50de1eda505c7ee52385ccc9bf08ed52bbd85df6 Mon Sep 17 00:00:00 2001
+From: Bloodlines Porter <noreply@invalid>
+Date: Sat, 7 Nov 2026 10:03:31 +0200
+Subject: [PATCH 2/2] fix(kk): drop the double init in the Metal bridge (mesa
+ e4174f89)
+
+---
+ src/kosmickrisp/bridge/mtl_argument_table.m | 2 +-
+ src/kosmickrisp/bridge/mtl_command_queue.m  | 2 +-
+ src/kosmickrisp/bridge/mtl_render_state.m   | 6 +++---
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/kosmickrisp/bridge/mtl_argument_table.m b/src/kosmickrisp/bridge/mtl_argument_table.m
+index 32b8375..5253055 100644
+--- a/src/kosmickrisp/bridge/mtl_argument_table.m
++++ b/src/kosmickrisp/bridge/mtl_argument_table.m
+@@ -13,7 +13,7 @@ mtl_argument_table_descriptor *
+ mtl_new_argument_table_descriptor()
+ {
+    @autoreleasepool {
+-      return [[MTL4ArgumentTableDescriptor new] init];
++      return [MTL4ArgumentTableDescriptor new];
+    }
+ }
+ 
+diff --git a/src/kosmickrisp/bridge/mtl_command_queue.m b/src/kosmickrisp/bridge/mtl_command_queue.m
+index a43bb13..ac67d6d 100644
+--- a/src/kosmickrisp/bridge/mtl_command_queue.m
++++ b/src/kosmickrisp/bridge/mtl_command_queue.m
+@@ -14,7 +14,7 @@ mtl_commit_options *
+ mtl_new_commit_options(void)
+ {
+    @autoreleasepool {
+-      return [[MTL4CommitOptions new] init];
++      return [MTL4CommitOptions new];
+    }
+ }
+ 
+diff --git a/src/kosmickrisp/bridge/mtl_render_state.m b/src/kosmickrisp/bridge/mtl_render_state.m
+index b463cdb..9a2ed30 100644
+--- a/src/kosmickrisp/bridge/mtl_render_state.m
++++ b/src/kosmickrisp/bridge/mtl_render_state.m
+@@ -22,7 +22,7 @@ mtl_render_pass_descriptor *
+ mtl_new_render_pass_descriptor(void)
+ {
+    @autoreleasepool {
+-      return [[MTL4RenderPassDescriptor new] init];
++      return [MTL4RenderPassDescriptor new];
+    }
+ }
+ 
+@@ -216,7 +216,7 @@ mtl_stencil_descriptor *
+ mtl_new_stencil_descriptor()
+ {
+    @autoreleasepool {
+-      return [[MTLStencilDescriptor new] init];
++      return [MTLStencilDescriptor new];
+    }
+ }
+ 
+@@ -306,7 +306,7 @@ mtl_depth_stencil_descriptor *
+ mtl_new_depth_stencil_descriptor()
+ {
+    @autoreleasepool {
+-      return [[MTLDepthStencilDescriptor new] init];
++      return [MTLDepthStencilDescriptor new];
+    }
+ }
+ 
+-- 
+2.54.0
+

@@ -1,0 +1,25 @@
+From 26e158acbbab86c3b6cfb4173eda251de0eabb4b Mon Sep 17 00:00:00 2001
+From: Bloodlines Porter <noreply@invalid>
+Date: Sat, 7 Nov 2026 10:03:14 +0200
+Subject: [PATCH 1/2] fix(kk): release the drawable after presenting it (mesa
+ 750284be)
+
+---
+ src/kosmickrisp/vulkan/kk_queue.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/kosmickrisp/vulkan/kk_queue.c b/src/kosmickrisp/vulkan/kk_queue.c
+index 313a85a..3d963fb 100644
+--- a/src/kosmickrisp/vulkan/kk_queue.c
++++ b/src/kosmickrisp/vulkan/kk_queue.c
+@@ -93,6 +93,7 @@ kk_queue_submit(struct vk_queue *vk_queue, struct vk_queue_submit *submit)
+          mtl_command_queue_signal_drawable(queue->mtl_handle,
+                                            cmd_buffer->drawable);
+          mtl_drawable_present(cmd_buffer->drawable);
++         mtl_release(cmd_buffer->drawable);
+          cmd_buffer->drawable = NULL;
+       }
+    }
+-- 
+2.54.0
+

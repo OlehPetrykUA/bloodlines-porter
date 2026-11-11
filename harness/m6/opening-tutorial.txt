@@ -1,0 +1,7 @@
+wait map sp_tutorial_1
+sleep 5
+console "sv_cheats 1"
+console "ent_fire trig_leave_tutorial ChangeNow"
+wait map sm_pawnshop_1
+sleep 5
+capture sm_pawnshop_1-arrival

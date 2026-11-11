@@ -1,0 +1,16 @@
+wait menu
+sleep 3
+key grave
+sleep 1
+text "echo M5_AC"
+key left
+text "B"
+key return
+sleep 1
+text "echo M5_XY"
+key backspace
+text "Z"
+key return
+sleep 1
+key grave
+sleep 1

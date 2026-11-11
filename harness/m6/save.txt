@@ -1,0 +1,9 @@
+wait map
+sleep 3
+keydown w
+sleep 1
+keyup w
+sleep 1
+capture s0
+console "save m6a"
+sleep 3

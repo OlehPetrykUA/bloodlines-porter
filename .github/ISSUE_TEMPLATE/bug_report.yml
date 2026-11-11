@@ -1,0 +1,106 @@
+name: Bug report
+description: Something crashes, looks wrong, fails to build or plays badly
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Read "Known issues" in the README first: full-screen judder on a built-in display, the ⌘2 MetalFX hold, hitches after app switches and the slow seconds after a level load are already known. For a wide-screen screen that sits off-centre, give the aspect, the window size or display, the screen and a screenshot.
+
+        Do not attach game files, the Unofficial Patch installer or save games.
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did it go wrong?
+      options:
+        - Verify (game check)
+        - Build
+        - Starting the game
+        - While playing
+        - Porter window or command line
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      description: Apple menu, About This Mac
+      placeholder: macOS 26.1
+    validations:
+      required: true
+  - type: input
+    id: mac
+    attributes:
+      label: Mac model and chip
+      placeholder: MacBook Pro 14-inch 2023, M3 Pro, 18 GB
+    validations:
+      required: true
+  - type: input
+    id: display
+    attributes:
+      label: Display
+      description: Built-in or external, resolution and refresh rate, and whether the game ran in a window or full screen
+      placeholder: Built-in 1496x967 at 120 Hz, full screen
+    validations:
+      required: true
+  - type: input
+    id: game
+    attributes:
+      label: Game build
+      description: Store and version of your copy, and whether Verify passed
+      placeholder: Steam, English, patch 1.2, Verify passed
+    validations:
+      required: true
+  - type: dropdown
+    id: patch
+    attributes:
+      label: Unofficial Patch
+      options:
+        - Off
+        - On, 12.0.8 Basic
+        - On, another version
+    validations:
+      required: true
+  - type: input
+    id: porter
+    attributes:
+      label: Porter version
+      description: Release tag, or the commit if you built it from source
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Where in the game, and how often it happens
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        Attach the zip made by Collect Logs in the Porter window, or by this command in Terminal. It writes the zip to your Desktop and prints its path:
+
+            "$HOME/Games/Vampire Bloodlines.app/Contents/MacOS/Vampire Bloodlines" collect-logs
+
+        The zip holds run logs, crash reports and the build record, never saves or game files. Look inside before you attach it. For a build that failed before the game app existed, paste the last lines of the build output instead.
+      placeholder: Drag the zip here
+    validations:
+      required: true
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Checks
+      options:
+        - label: I did not attach game files, the patch installer or saves
+          required: true
+        - label: I use my own legally obtained copy of the game
+          required: true

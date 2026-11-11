@@ -1,0 +1,187 @@
+From 0cf6ecf5d5896536a61476ab5daf7f9e9ecd8a18 Mon Sep 17 00:00:00 2001
+From: Bloodlines Porter <noreply@invalid>
+Date: Fri, 6 Nov 2026 08:23:24 +0200
+Subject: [PATCH] perf(dxvk): keep a Vulkan pipeline cache file across runs
+
+---
+ src/dxvk/dxvk_device.cpp   | 99 ++++++++++++++++++++++++++++++++++++++
+ src/dxvk/dxvk_device.h     | 18 +++++++
+ src/dxvk/dxvk_graphics.cpp |  2 +-
+ 3 files changed, 118 insertions(+), 1 deletion(-)
+
+diff --git a/src/dxvk/dxvk_device.cpp b/src/dxvk/dxvk_device.cpp
+index 5564e001..c9c196bc 100644
+--- a/src/dxvk/dxvk_device.cpp
++++ b/src/dxvk/dxvk_device.cpp
+@@ -5,6 +5,10 @@
+ #include "dxvk_shader_cache.h"
+ #include "dxvk_shader_ir.h"
+ 
++#include <cstdio>
++#include <fstream>
++#include <iterator>
++
+ namespace dxvk {
+   
+   DxvkDevice::DxvkDevice(
+@@ -41,6 +45,8 @@ namespace dxvk {
+     if (env::getEnvVar("DXVK_SHADER_CACHE") != "0" && DxvkShader::getShaderDumpPath().empty())
+       m_shaderCache = DxvkShaderCache::getInstance();
+ 
++    createPipelineCache();
++
+     logBindingModel();
+   }
+   
+@@ -66,6 +72,99 @@ namespace dxvk {
+     // Stop workers explicitly in order to prevent
+     // access to structures that are being destroyed.
+     m_objects.pipelineManager().stopWorkerThreads();
++
++    destroyPipelineCache();
++  }
++
++
++  void DxvkDevice::createPipelineCache() {
++    std::string dir = env::getEnvVar("DXVK_SHADER_CACHE_PATH");
++
++    if (dir.empty() || env::getEnvVar("DXVK_PIPELINE_CACHE") == "0")
++      return;
++
++    m_pipelineCachePath = dir + "/vk-pipeline-cache.bin";
++
++    std::vector<char> data;
++    std::ifstream in(m_pipelineCachePath, std::ios::binary);
++
++    if (in)
++      data.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
++
++    VkPipelineCacheCreateInfo info = { VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO };
++    info.initialDataSize = data.size();
++    info.pInitialData = data.data();
++
++    VkResult vr = m_vkd->vkCreatePipelineCache(m_vkd->device(), &info, nullptr, &m_pipelineCache);
++
++    if (vr && !data.empty()) {
++      data.clear();
++      info.initialDataSize = 0;
++      info.pInitialData = nullptr;
++      vr = m_vkd->vkCreatePipelineCache(m_vkd->device(), &info, nullptr, &m_pipelineCache);
++    }
++
++    if (vr) {
++      m_pipelineCache = VK_NULL_HANDLE;
++      Logger::warn(str::format("Pipeline cache: create failed: ", vr));
++      return;
++    }
++
++    m_pipelineCacheSaved = data.size();
++    Logger::info(str::format("Pipeline cache: loaded ", data.size(), " bytes from ", m_pipelineCachePath));
++
++    m_pipelineCacheThread = dxvk::thread([this] {
++      env::setThreadName("dxvk-pcache");
++      std::unique_lock lock(m_pipelineCacheMutex);
++
++      while (!m_pipelineCacheCond.wait_for(lock, std::chrono::seconds(15), [this] { return m_pipelineCacheStop; }))
++        savePipelineCache();
++    });
++  }
++
++
++  void DxvkDevice::savePipelineCache() {
++    size_t size = 0;
++
++    if (m_vkd->vkGetPipelineCacheData(m_vkd->device(), m_pipelineCache, &size, nullptr) || size == m_pipelineCacheSaved)
++      return;
++
++    std::vector<char> data(size);
++
++    if (m_vkd->vkGetPipelineCacheData(m_vkd->device(), m_pipelineCache, &size, data.data()))
++      return;
++
++    std::string tmp = m_pipelineCachePath + ".tmp";
++    std::ofstream out(tmp, std::ios::binary | std::ios::trunc);
++
++    if (!out.write(data.data(), size))
++      return;
++
++    out.close();
++
++    if (!out || std::rename(tmp.c_str(), m_pipelineCachePath.c_str()))
++      return;
++
++    m_pipelineCacheSaved = size;
++    Logger::info(str::format("Pipeline cache: saved ", size, " bytes"));
++  }
++
++
++  void DxvkDevice::destroyPipelineCache() {
++    if (!m_pipelineCache)
++      return;
++
++    { std::lock_guard lock(m_pipelineCacheMutex);
++      m_pipelineCacheStop = true;
++    }
++
++    m_pipelineCacheCond.notify_one();
++    m_pipelineCacheThread.join();
++
++    savePipelineCache();
++
++    m_vkd->vkDestroyPipelineCache(m_vkd->device(), m_pipelineCache, nullptr);
++    m_pipelineCache = VK_NULL_HANDLE;
+   }
+ 
+ 
+diff --git a/src/dxvk/dxvk_device.h b/src/dxvk/dxvk_device.h
+index 7fb070d5..695d01ee 100644
+--- a/src/dxvk/dxvk_device.h
++++ b/src/dxvk/dxvk_device.h
+@@ -102,6 +102,10 @@ namespace dxvk {
+     Rc<vk::DeviceFn> vkd() const {
+       return m_vkd;
+     }
++
++    VkPipelineCache pipelineCache() const {
++      return m_pipelineCache;
++    }
+     
+     /**
+      * \brief Vulkan instance functions
+@@ -778,6 +782,20 @@ namespace dxvk {
+ 
+     Rc<DxvkShaderCache>         m_shaderCache;
+ 
++    VkPipelineCache             m_pipelineCache = VK_NULL_HANDLE;
++    std::string                 m_pipelineCachePath;
++    size_t                      m_pipelineCacheSaved = 0;
++    dxvk::mutex                 m_pipelineCacheMutex;
++    dxvk::condition_variable    m_pipelineCacheCond;
++    bool                        m_pipelineCacheStop = false;
++    dxvk::thread                m_pipelineCacheThread;
++
++    void createPipelineCache();
++
++    void savePipelineCache();
++
++    void destroyPipelineCache();
++
+     DxvkDevicePerfHints getPerfHints();
+ 
+     void recycleCommandList(
+diff --git a/src/dxvk/dxvk_graphics.cpp b/src/dxvk/dxvk_graphics.cpp
+index ffbfeb47..fe2ac3cb 100644
+--- a/src/dxvk/dxvk_graphics.cpp
++++ b/src/dxvk/dxvk_graphics.cpp
+@@ -1515,7 +1515,7 @@ namespace dxvk {
+       flags.pNext = std::exchange(info.pNext, &flags);
+ 
+     VkPipeline pipeline = VK_NULL_HANDLE;
+-    VkResult vr = vk->vkCreateGraphicsPipelines(vk->device(), VK_NULL_HANDLE, 1, &info, nullptr, &pipeline);
++    VkResult vr = vk->vkCreateGraphicsPipelines(vk->device(), m_device->pipelineCache(), 1, &info, nullptr, &pipeline);
+ 
+     if (vr != VK_SUCCESS) {
+       Logger::err(str::format("DxvkGraphicsPipeline: Failed to compile pipeline: ", vr));
+-- 
+2.54.0
+

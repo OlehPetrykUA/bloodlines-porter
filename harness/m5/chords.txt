@@ -1,0 +1,13 @@
+wait menu
+sleep 3
+key grave
+sleep 1
+chord a
+sleep 0.5
+chord tab
+sleep 0.5
+chord grave
+sleep 0.5
+text "echo M5_AFTER"
+key return
+sleep 1

@@ -1,0 +1,8 @@
+wait menu
+sleep 3
+move @newgame
+sleep 0.5
+click left
+sleep 60
+capture chargen
+sleep 10

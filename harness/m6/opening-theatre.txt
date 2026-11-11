@@ -1,0 +1,6 @@
+wait map sp_theatre
+sleep 5
+capture theatre-arrival
+wait map sp_tutorial_1
+sleep 5
+capture tutorial-arrival

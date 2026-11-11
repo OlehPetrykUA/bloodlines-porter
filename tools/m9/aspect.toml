@@ -1,0 +1,333 @@
+[[row]]
+id = "g2b_modes"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "engine"
+rva = 0xfc8ac
+kind = "bytes"
+old = "8d642400"
+new = "eb199090"
+guard = [0xfc7a0, 0x110]
+asm = "engine+0xfc8a7 mov edx,4; +0xfc8ac lea esp,[esp] (pad); +0xfc8b0 cmp [edx*8+0x201ad44c],eax; +0xfc8b9 cmp [edx*8+0x201ad450],ecx; +0xfc8c2 dec edx; jns +0xfc8b0; +0xfc8c5 jmp +0xfc8e1 (reject); +0xfc8c7 test edx,edx; jl +0xfc8e1; +0xfc8cb store mode. new: jmp +0xfc8c7 with edx = 4, after the >= 640 (+0xfc890) and >= 480 (+0xfc89f) checks"
+
+[[row]]
+id = "g2b_aspect"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "engine"
+rva = 0x7a424
+kind = "bytes"
+old = "8b0d8ccaa6208b01ff500484c0750d8b0d8ccaa6208b412c85c0750ac7442410abaaaa3feb08c7442410398ee33f"
+new = "ff158008400089442410eb2290909090909090909090909090909090909090909090909090909090909090909090"
+abs = 2
+cell = 32
+pop = 0
+guard = [0x7a424, 0x2e]
+asm = "engine+0x7a418 je +0x7a424 (flag clear; flag set keeps +0x7a41a mov [esp+0x10],1.0; jmp +0x7a452); +0x7a424 mov ecx,[0x20a6ca8c]; call [eax+4]; jne +0x7a440; +0x7a439 [ecx+0x2c] (r_anamorphic); jne +0x7a44a; +0x7a440 mov [esp+0x10],0x3faaaaab (4/3); jmp +0x7a452; +0x7a44a mov [esp+0x10],0x3fe38e39 (16/9); +0x7a452 the doubles of the material-system +0x14c perspective call, [esp+0x10] is the aspect. new: call [0x00400880] (cell 32, AspectRatio); mov [esp+0x10],eax; jmp +0x7a452; nops. Branches into the block come only from inside it (+0x7a431, +0x7a43e); relocations at +0x7a426, +0x7a435 are dropped. In-place because the UP set uses all 85 bytes of engine .text slack"
+
+[[row]]
+id = "g2b_anamorphic"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x191fd5
+kind = "bytes"
+old = "74"
+new = "eb"
+guard = [0x191fd5, 1]
+asm = "client+0x191fd2 cmp [eax+0x2c],ebx (r_anamorphic); +0x191fd5 je +0x191fe3; +0x191fd7 fld [ebp+0x38]; fmul [0x1072e8e4] (4/3f); fstp [ebp+0x38]. new: jmp +0x191fe3"
+
+[[row]]
+id = "g2b_gamma"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x109bae
+kind = "bytes"
+old = "dc0dc87e2210"
+new = "d80d7cb92210"
+abs = 2
+keep_reloc = true
+guard = [0x109bae, 6]
+asm = "client+0x109ba2 xor esi,esi; mov [esp+0x20],esi; +0x109baa fild [esp+0x20] (i); +0x109bae fmul qword [0x10227ec8] (1/1024, the HUD double g2b_hud rewrites); fld [esp+0x14]; +0x109bb8 call 0x101d1380 (pow); +0x109bc7 fst [esi*4+0x104d55a0]; +0x109be2 fmul 255; +0x109bf2 mov [esi*4+0x104db5b0],eax: the gamma ramp, the one reader of the double that is not a screen-width scale. new: fmul dword [0x1022b97c] (1/1024f in .rdata), same length, its relocation kept"
+
+[[row]]
+id = "g2b_load_size"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x16728d
+kind = "call"
+old = "e85e260400"
+cell = 36
+pop = 2
+thunk = "{jmp}"
+guard = [0x16728d, 5]
+asm = "CLoadingDiscPanel ctor 0x101670d0: +0x16727f call 0x100cd0f0 (ScreenHeight); push eax; +0x167285 call 0x100cd100 (ScreenWidth); push eax; +0x16728d call 0x101a98f0 (Panel::SetSize, ret 8): the loading panel is made full screen. new: a call through cell 36 whose shim passes the 4:3 width H*4/3 in place of ScreenWidth when the HUD double is rewritten, so the panel is a 4:3 pillarbox and the stock-double reads at +0x167392, +0x1673d0, +0x1676f5, +0x167722, +0x167751, +0x167780 (tip text, bar and caps, 595/217/190/830/152/869 of 1024) scale by W*d = H/768 = panel width/1024 in the panel's own coordinates"
+
+[[row]]
+id = "g2b_load_pos"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x167298
+kind = "call"
+old = "e8f3250400"
+cell = 37
+pop = 2
+thunk = "{jmp}"
+guard = [0x167298, 5]
+asm = "CLoadingDiscPanel ctor 0x101670d0: +0x167292 push 0; push 0; +0x167298 call 0x101a9890 (Panel::SetPos, ret 8): the loading panel is put at (0,0). new: a call through cell 37 whose shim passes x = (ScreenWidth - 4:3 width)/2 so the pillarbox is centred; at 4:3 it is 0"
+
+[[row]]
+id = "g2b_ui_charedit_frame"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x1716b1
+kind = "call"
+old = "e89a820300"
+cell = 38
+pop = 4
+thunk = "{jmp}"
+guard = [0x1716b1, 5]
+asm = "CharEditPanel ctor 0x10171430 (client+0x171430): +0x171697 call ScreenWidth; mov ebx,eax; call ScreenHeight; push eax; push ebx; push 0; push 0; +0x1716b1 call 0x101a9950 (Panel::SetBounds(0,0,W,H), ret 0x10) on the frame at this+0x10, parent the root. new: a call through cell 38 whose shim puts the frame at x = (ScreenWidth - w)/2 when the width passed is the 4:3 width (g2b_ui_charedit_w makes it so at a wide window), and the four CharEdit*Panel and the QuestLogPanel are its children (parent [0x105fb14c]+0x10, set at +0x171fb7); the K-absolute children of the frame (x = ScreenWidth*d*K) then sit in the centred 4:3 area"
+
+[[row]]
+id = "g2b_ui_wizard_ctor"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x1748fa
+kind = "call"
+old = "e851500300"
+cell = 40
+pop = 4
+thunk = "{jmp}"
+guard = [0x1748fa, 5]
+asm = "VCharWizardUI ctor 0x10174800: +0x1748b6 call ScreenHeight; fild; fmul [0x10227eb8] (1/768); fmul [0x10228d50] (768.0); ftol; push; +0x1748d5 call ScreenWidth; fild; fmul [0x10227ec8] (HUD double); fmul [0x1022a380] (1024.0); ftol; push; push 0; push 0; +0x1748fa call 0x101a9950 (Panel::SetBounds(0,0,W*d*1024,H)) on the frame at this+0x10; its children, at this+0x180 and this+0x238, have the frame as parent and are placed (0,0). new: a call through cell 40 whose shim sets x = (ScreenWidth - w)/2 when w is the 4:3 width"
+
+[[row]]
+id = "g2b_ui_wizard_show"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x174bd1
+kind = "call"
+old = "e87a4d0300"
+cell = 41
+pop = 4
+thunk = "{jmp}"
+guard = [0x174bd1, 5]
+asm = "VCharWizardUI method 0x10174b80 (vtable index 2): +0x174b8d call ScreenHeight (x 1/768 x 768); +0x174bac ScreenWidth x HUD double x 1024.0; push 0; push 0; +0x174bd1 call 0x101a9950 (Panel::SetBounds(0,0,W*d*1024,H)) on the frame at this+0x10; then vtable +0xd8 and a jmp to 0x101749c0. new: a call through cell 41, the same shim as g2b_ui_wizard_ctor"
+
+[[row]]
+id = "g2b_ui_charedit_w"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x171697
+kind = "call"
+old = "e864baf5ff"
+cell = 42
+pop = 0
+thunk = "{jmp}"
+guard = [0x171697, 5]
+asm = "CharEditPanel ctor 0x10171430: +0x171697 call 0x100cd100 (ScreenWidth) result is the frame width in SetBounds(0,0,W,H) at +0x1716b1. new: a call through cell 42 whose shim returns the 4:3 width (H*4+1)/3 at a wide window and ScreenWidth otherwise"
+
+[[row]]
+id = "g2b_ui_charedit_cx_a"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x1720b7
+kind = "call"
+old = "e844b0f5ff"
+cell = 43
+pop = 0
+thunk = "{jmp}"
+guard = [0x1720b7, 5]
+asm = "CharEditPanel ctor 0x10171430: +0x1720b5 push 0; +0x1720b7 call 0x100cd100 (ScreenWidth); sub eax,[esp+0x20] (child width); cdq; sub eax,edx; sar eax,1; push eax: child x = (ScreenWidth - w)/2, a centring inside the frame. new: a call through cell 43 (UiWidth), so it centres in the 4:3 frame"
+
+[[row]]
+id = "g2b_ui_charedit_cx_b"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x17216b
+kind = "call"
+old = "e890aff5ff"
+cell = 44
+pop = 0
+thunk = "{jmp}"
+guard = [0x17216b, 5]
+asm = "CharEditPanel ctor 0x10171430: +0x172169 push 0; +0x17216b call 0x100cd100 (ScreenWidth); sub eax,ebp (child width); cdq; sub eax,edx; sar eax,1; push eax: child x = (ScreenWidth - w)/2, a centring inside the frame. new: a call through cell 44 (UiWidth)"
+
+[[row]]
+id = "g2b_ui_char_w"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x17659e
+kind = "call"
+old = "e85d6bf5ff"
+cell = 45
+pop = 0
+thunk = "{jmp}"
+guard = [0x17659e, 5]
+asm = "CharEditCharPanel ctor 0x10176520 (parent the CharEditPanel frame at this+0x10 of the object at [0x105fb14c], set at 0x10171fb7): +0x17659e call 0x100cd100 (ScreenWidth); mov edi,eax; edi -= 2*ebp (ebp = ScreenWidth*d*0 = 0); +0x1765eb SetBounds(0,y,edi,h). new: a call through cell 45 (UiWidth), so the panel fills the 4:3 frame"
+
+[[row]]
+id = "g2b_ui_equip_w"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x178964
+kind = "call"
+old = "e89747f5ff"
+cell = 46
+pop = 0
+thunk = "{jmp}"
+guard = [0x178964, 5]
+asm = "CharEditEquipPanel method 0x101788b0: +0x178924 ScreenWidth*d*0 (x margin 0); +0x178964 call 0x100cd100 (ScreenWidth); mov edi,eax; edi -= 2*ebp; +0x1789b1 SetBounds. new: a call through cell 46 (UiWidth)"
+
+[[row]]
+id = "g2b_ui_info_w"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x17b5ce
+kind = "call"
+old = "e82d1bf5ff"
+cell = 47
+pop = 0
+thunk = "{jmp}"
+guard = [0x17b5ce, 5]
+asm = "CharEditInfoPanel method 0x1017b550: +0x17b58e ScreenWidth*d*0 (x margin 0); +0x17b5ce call 0x100cd100 (ScreenWidth); mov edi,eax; edi -= 2*ebp; +0x17b61b SetBounds. new: a call through cell 47 (UiWidth)"
+
+[[row]]
+id = "g2b_ui_barter_frame"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x16ee75
+kind = "call"
+old = "e8d6aa0300"
+cell = 50
+pop = 4
+thunk = "{jmp}"
+guard = [0x16ee75, 5]
+asm = "VBarterUI vtable method 0x1016edf0 (index 2): +0x16ee07 ScreenHeight x 1/768 x 768 (h); +0x16ee2b ScreenWidth x HUD double x 1024.0 (w); +0x16ee3d push 0 (y); +0x16ee59 ScreenWidth - ScreenWidth x HUD double x 1024.0 (x, right-anchored); +0x16ee75 call 0x101a9950 (Panel::SetBounds(x,0,w,h)) on the frame at this+0x10. At a wide window this puts the 4:3 barter panel against the right edge. new: a call through cell 50, the same shim as g2b_ui_charedit_frame, which centres it when x is 0 or W - w"
+
+[[row]]
+id = "g2b_ui_box_paint"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x170f49
+kind = "call"
+old = "e8d286eeff"
+cell = 51
+pop = 4
+thunk = "{jmp}"
+guard = [0x170f49, 5]
+asm = "Bordered box class (ctor 0x10170e70, vtable 0x1024b0d4) Paint 0x10170f10: +0x170f22 call 0x101a98c0 (Panel::GetPos, parent-relative); +0x170f49 call 0x10059620(x, y, [this+0xb8], [this+0xbc]) on the image at [this+0xc0], a material-system quad in raw screen coordinates. Its parents (the sheet tabs, the quest log, the wizard) sit at x 0 of a frame that the frame rows centre, so at a wide window the border and fill were drawn at the window-left x. new: a call through cell 51 (UiImage), which adds the pillarbox offset to x"
+
+[[row]]
+id = "g2b_ui_slot_paint"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x16b108
+kind = "call"
+old = "e813e5eeff"
+cell = 52
+pop = 4
+thunk = "{jmp}"
+guard = [0x16b108, 5]
+asm = "Inventory and barter item slot (vtable 0x1024a27c) Paint 0x1016b0b0: +0x16b0c2 call 0x101a98c0 (Panel::GetPos, parent-relative); +0x16b0d9 ScreenWidth * d * 100 (w); +0x16b108 call 0x10059620(x, y, w, h) on the image at [this+0xb8], a material-system quad in raw screen coordinates. The slots sit in the VBarterUI frame that g2b_ui_barter_frame centres, so at a wide window the key-ring frame and the tray were drawn at the window-left x. new: a call through cell 52 (UiImage), which adds the pillarbox offset to x"
+
+[[row]]
+id = "g2b_ui_slot_paint_b"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x16b219
+kind = "call"
+old = "e802e4eeff"
+cell = 53
+pop = 4
+thunk = "{jmp}"
+guard = [0x16b219, 5]
+asm = "Inventory and barter item slot (vtable 0x1024a4ac) Paint 0x1016b1c0: +0x16b1d3 call 0x101a98c0 (Panel::GetPos, parent-relative); +0x16b1ea ScreenWidth * d * 100 (w); +0x16b219 call 0x10059620(x, y, w, h) on the image at [this+0xc0], a material-system quad in raw screen coordinates, the same bug as g2b_ui_slot_paint. new: a call through cell 53 (UiImage), which adds the pillarbox offset to x"
+
+[[row]]
+id = "g2b_ui_model_k"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x18b8cd
+kind = "call"
+old = "e82e18f4ff"
+cell = 54
+pop = 0
+thunk = "{jmp}"
+guard = [0x18b8cd, 5]
+asm = "CStudiomodelPanel (vtable 0x1024ef4c) Paint 0x1018b5c0, perspective branch (camera mode set only by the character sheet at +0x174063): +0x18b8cd call 0x100cd100 (ScreenWidth); cdq; sub; sar -> W/2; k = tan(20 deg) * near / (W/2) scales the off-centre frustum (+0x18b999 vf 0x150) whose left edge is (GetAbsPos x - W/2) * k. At a wide window k used the window width, so the player model was drawn W/W43 too large and clipped at the panel's right edge. new: a call through cell 54 (UiWidth), so k uses the 4:3 frame width; +0x18b8eb stays stock because W/2 is already the centred frame's centre"
+
+[[row]]
+id = "g2b_ui_barter_sel_paint"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x16d0f9
+kind = "call"
+old = "e8b2f2eeff"
+cell = 55
+pop = 5
+thunk = "{jmp}"
+guard = [0x16d0f9, 5]
+asm = "VBarterUI selection frame 0x1016cfc0, called from the item-slot Paint at +0x16b25e with the slot's parent-relative Panel::GetBounds x and y: x - ScreenWidth * d * K, then +0x16d0f9 call 0x1005c3b0(x, y, w, h, uv) (ret 0x14), a profiling wrapper around 0x1005c430, which binds the material (IMaterialSystem +0xd4, +0x1bc dynamic mesh) and builds the quad from its int args in raw screen coordinates, the same bug as g2b_ui_slot_paint. new: a call through cell 55 (UiImage5), which adds the pillarbox offset to x"
+
+[[row]]
+id = "g2b_ui_money_text"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x5f4db
+kind = "call"
+old = "e8b0000000"
+cell = 56
+pop = 3
+thunk = "{jmp}"
+guard = [0x5f4db, 5]
+asm = "Barter money label (UI_Wallet_Strings Name0, \"Current Money:\") Paint 0x1005f340: +0x5f4db call 0x1005f590 (thiscall font, text, &x); the helper sets x = (ScreenWidth x HUD double x K - text width) / 2, centred in a 4:3-wide strip from 0, and +0x5f530 draws the text at that raw screen x. new: a call through cell 56 (UiTextX) adds the pillar offset to x after the call"
+
+[[row]]
+id = "g2b_view_fov"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x192069
+kind = "jmp"
+old = "d94538d80df8582210"
+abs = 5
+cell = 34
+pop = 1
+thunk = "5055{call}58{disp}{resume}"
+guard = [0x192069, 9]
+asm = "client+0x192069 fld [ebp+0x38]; +0x19206c fmul [0x102258f8 in the DLL, 0x107258f8 at the layout base] (pi/180f), relocation at +0x19206e; +0x192072 fmul [0x106e34dc] (0.5f); fptan; fstp [ebp+0x40]; +0x19207f same for [ebp+0x3c] into [ebp+0x44]"
+
+[[row]]
+id = "g2b_camera_fov"
+owner = "m9-g2b"
+switch = ["M9/Engine Aspect"]
+module = "client"
+rva = 0x6710d
+kind = "jmp"
+old = "d99e40030000"
+cell = 35
+pop = 1
+thunk = "{disp}5056{call}58{resume}"
+guard = [0x67108, 11]
+asm = "client+0x670ec push 0x42340000 (45.0); +0x670f5 push 0x10770c88 'camera_fov'; +0x67108 call 0x10628540 (float getter); +0x6710d fstp [esi+0x340]; +0x67113 next getter"

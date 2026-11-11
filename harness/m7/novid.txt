@@ -1,0 +1,3 @@
+sleep 20
+capture menu-player
+sleep 2

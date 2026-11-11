@@ -1,0 +1,22 @@
+$intro
+sleep 3
+capture menu-a
+chord 1
+sleep 1
+capture overlay-fps
+chord 1
+sleep 1
+capture overlay-off
+chord 2
+sleep 0.5
+chord 4
+sleep 0.5
+chord 5
+sleep 0.5
+chord 6
+sleep 0.5
+chord 7
+sleep 0.5
+chord 8
+sleep 1
+capture menu-b

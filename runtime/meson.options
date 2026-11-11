@@ -1,0 +1,4 @@
+option('gen_dir', type: 'string')
+option('module', type: 'string', value: 'vstdlib')
+option('prebuilt', type: 'boolean', value: false)
+option('prebuilt_prefix', type: 'string', value: '/opt/homebrew')

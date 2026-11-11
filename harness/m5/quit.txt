@@ -1,0 +1,6 @@
+wait menu
+sleep 3
+move @quit
+sleep 0.5
+click left
+sleep 20

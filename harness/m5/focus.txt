@@ -1,0 +1,14 @@
+wait menu
+sleep 3
+move @empty
+sleep 0.3
+keydown lshift
+down left
+sleep 0.3
+focus lost
+sleep 0.3
+move 100 100
+key a
+sleep 0.3
+focus gained
+sleep 1

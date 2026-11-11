@@ -1,0 +1,5 @@
+wait map
+sleep 3
+minimise 10
+sleep 12
+capture after

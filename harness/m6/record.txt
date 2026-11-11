@@ -1,0 +1,15 @@
+wait map
+sleep 5
+console "record m6walk"
+sleep 1
+keydown w
+sleep 1.5
+keyup w
+sleep 1
+keydown s
+sleep 1.5
+keyup s
+sleep 1
+console "stop"
+sleep 1
+capture rec-end

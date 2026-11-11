@@ -1,0 +1,15 @@
+wait map
+sleep 5
+capture w0
+sleep 2
+capture w0b
+keydown w
+sleep 1.5
+keyup w
+sleep 1
+capture w1
+keydown s
+sleep 1.5
+keyup s
+sleep 1
+capture w2

@@ -1,0 +1,9 @@
+wait map
+sleep 5
+capture l0
+look 200 0
+sleep 1
+capture l1
+look -200 0
+sleep 1
+capture l2
