@@ -26,7 +26,7 @@ Signing is ad hoc. Developer ID signing and notarization are not done here (docs
 EOF
 }
 
-[ "$(ps -o nice= -p $$)" -ge 10 ] || renice -n 10 -p $$ >/dev/null
+[ "$(ps -o nice= -p $$)" -ge 10 ] || renice 10 -p $$ >/dev/null
 
 REPO=$(cd "$(dirname "$0")/../.." && pwd)
 DEV=${BN_DEV_HOME:-$HOME/Library/Caches/BloodlinesPorter/dev}
