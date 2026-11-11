@@ -1483,21 +1483,23 @@ static void path_cases(void)
 {
     rt_gfx_paths p;
     const char *app = "/Applications/My Game/Bloodlines Native.app/Contents/MacOS/bloodlines-native";
-    rt_gfx_resolve_paths(app, "/h", NULL, NULL, NULL, &p);
+    rt_gfx_resolve_paths(app, "/h", NULL, NULL, NULL, NULL, &p);
     result(p.bundled && !strcmp(p.lib, "/Applications/My Game/Bloodlines Native.app/Contents/Frameworks/libdxvk_d3d9.0.dylib") &&
                !strcmp(p.loader, "/Applications/My Game/Bloodlines Native.app/Contents/Frameworks/libvulkan.1.dylib") &&
                !strcmp(p.icd, "/Applications/My Game/Bloodlines Native.app/Contents/Resources/kosmickrisp_mesa_icd.aarch64.json"),
            "gfx paths inside a .app resolve to Frameworks and Resources");
-    rt_gfx_resolve_paths("/h/build/bloodlines-native", "/h", NULL, NULL, NULL, &p);
-    result(!p.bundled && !strcmp(p.lib, "/h/Games/VTMB/build/dxvk/inst/lib/libdxvk_d3d9.0.dylib") &&
+    rt_gfx_resolve_paths("/h/build/bloodlines-native", "/h", NULL, NULL, NULL, NULL, &p);
+    result(!p.bundled && !strcmp(p.lib, "/h/Library/Caches/BloodlinesPorter/dev/dxvk/inst/lib/libdxvk_d3d9.0.dylib") &&
                !strncmp(p.loader, "/opt/homebrew/", 14) && !strncmp(p.icd, "/opt/homebrew/", 14),
            "gfx paths outside a .app keep the dev paths");
-    rt_gfx_resolve_paths("/Users/x/Game/Contents/MacOS/bloodlines-native", "/h", NULL, NULL, NULL, &p);
+    rt_gfx_resolve_paths("/h/build/bloodlines-native", "/h", "/d", NULL, NULL, NULL, &p);
+    result(!p.bundled && !strcmp(p.lib, "/d/dxvk/inst/lib/libdxvk_d3d9.0.dylib"), "gfx paths outside a .app follow BN_DEV_HOME");
+    rt_gfx_resolve_paths("/Users/x/Game/Contents/MacOS/bloodlines-native", "/h", NULL, NULL, NULL, NULL, &p);
     result(!p.bundled, "gfx paths: Contents/MacOS outside a .app is not a bundle");
-    rt_gfx_resolve_paths(app, "/h", "/e/lib", "/e/loader", "/e/icd", &p);
+    rt_gfx_resolve_paths(app, "/h", "/d", "/e/lib", "/e/loader", "/e/icd", &p);
     result(p.bundled && !strcmp(p.lib, "/e/lib") && !strcmp(p.loader, "/e/loader") && !strcmp(p.icd, "/e/icd"),
            "gfx paths: env values win inside a .app");
-    rt_gfx_resolve_paths(app, "/h", NULL, "/e/loader", NULL, &p);
+    rt_gfx_resolve_paths(app, "/h", NULL, NULL, "/e/loader", NULL, &p);
     result(!strcmp(p.loader, "/e/loader") && strstr(p.lib, "/Contents/Frameworks/") && strstr(p.icd, "/Contents/Resources/"),
            "gfx paths: one env value overrides only itself");
 }

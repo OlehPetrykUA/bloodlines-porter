@@ -2416,8 +2416,8 @@ static void env(const char *name, const char *value)
     rt_log("gfx env %s=%s (%s)", name, getenv(name), old ? "kept" : "set");
 }
 
-void rt_gfx_resolve_paths(const char *exe, const char *home, const char *e_lib, const char *e_loader, const char *e_icd,
-                          rt_gfx_paths *o)
+void rt_gfx_resolve_paths(const char *exe, const char *home, const char *e_dev, const char *e_lib, const char *e_loader,
+                          const char *e_icd, rt_gfx_paths *o)
 {
     static const char tail[] = "/Contents/MacOS";
     char dir[PATH_MAX] = "";
@@ -2438,7 +2438,8 @@ void rt_gfx_resolve_paths(const char *exe, const char *home, const char *e_lib, 
         snprintf(o->loader, sizeof o->loader, "%s/Contents/Frameworks/libvulkan.1.dylib", dir);
         snprintf(o->icd, sizeof o->icd, "%s/Contents/Resources/" ICD_FILE, dir);
     } else {
-        snprintf(o->lib, sizeof o->lib, "%s/Games/VTMB/build/dxvk/inst/lib/libdxvk_d3d9.0.dylib", home ? home : ".");
+        if (e_dev && *e_dev) snprintf(o->lib, sizeof o->lib, "%s/dxvk/inst/lib/libdxvk_d3d9.0.dylib", e_dev);
+        else snprintf(o->lib, sizeof o->lib, "%s/Library/Caches/BloodlinesPorter/dev/dxvk/inst/lib/libdxvk_d3d9.0.dylib", home ? home : ".");
         snprintf(o->loader, sizeof o->loader, "%s", LOADER_PATH);
         snprintf(o->icd, sizeof o->icd, "%s", ICD_PATH);
     }
@@ -2488,7 +2489,7 @@ int rt_gfx_init(int mode, const char *overlay)
     char exe[PATH_MAX], path[PATH_MAX + 64];
     own_exe(exe);
     rt_gfx_paths gp;
-    rt_gfx_resolve_paths(exe, getenv("HOME"), getenv("RT_DXVK_LIB"), getenv("SDL_VULKAN_LIBRARY"),
+    rt_gfx_resolve_paths(exe, getenv("HOME"), getenv("BN_DEV_HOME"), getenv("RT_DXVK_LIB"), getenv("SDL_VULKAN_LIBRARY"),
                          getenv("VK_DRIVER_FILES"), &gp);
     rt_log("gfx paths %s: lib %s loader %s icd %s", gp.bundled ? "bundle" : "dev", gp.lib, gp.loader, gp.icd);
     const char *lib = gp.lib, *icd = gp.icd;

@@ -135,11 +135,16 @@ static int rm_cb(const char *p, const struct stat *s, int flag, struct FTW *w)
     return remove(p);
 }
 
+static void default_game(char *out, size_t n, const char *fallback)
+{
+    const char *g = getenv("BN_GAME");
+    snprintf(out, n, "%s", g && *g ? g : fallback);
+}
+
 static int audio_selftest(int argc, char **argv)
 {
     char game[PATH_MAX], overlay[PATH_MAX] = "";
-    const char *home = getenv("HOME");
-    snprintf(game, sizeof game, "%s/Games/VTMB/vanilla", home ? home : ".");
+    default_game(game, sizeof game, ".");
     for (int i = 2; i < argc; i++) {
         if (!strcmp(argv[i], "--game") && i + 1 < argc) snprintf(game, sizeof game, "%s", argv[++i]);
         else if (!strcmp(argv[i], "--overlay") && i + 1 < argc) snprintf(overlay, sizeof overlay, "%s", argv[++i]);
@@ -173,8 +178,8 @@ static int up_selftest(int argc, char **argv)
 static int py21_compile(int argc, char **argv)
 {
     char game[PATH_MAX], overlay[PATH_MAX] = "", modarg[512];
-    const char *home = getenv("HOME"), *dir = NULL, *mod = NULL;
-    snprintf(game, sizeof game, "%s/Games/VTMB/vanilla", home ? home : ".");
+    const char *dir = NULL, *mod = NULL;
+    default_game(game, sizeof game, ".");
     for (int i = 2; i < argc; i++) {
         if (!strcmp(argv[i], "--game") && i + 1 < argc) snprintf(game, sizeof game, "%s", argv[++i]);
         else if (!strcmp(argv[i], "--mod") && i + 1 < argc) mod = argv[++i];
@@ -219,7 +224,7 @@ static int run(int argc, char **argv)
     char overlay[PATH_MAX], game[PATH_MAX];
     const char *home = getenv("HOME");
     snprintf(overlay, sizeof overlay, "%s/Library/Application Support/" RT_SUPPORT_NAME, home ? home : ".");
-    snprintf(game, sizeof game, "%s/Games/VTMB/vanilla", home ? home : ".");
+    default_game(game, sizeof game, "");
     int i = 2;
     for (; i < argc; i++) {
         if (!strcmp(argv[i], "--until") && i + 1 < argc && !strcmp(argv[i + 1], "console")) {
@@ -282,6 +287,7 @@ static int run(int argc, char **argv)
     rt_set_guest_quiet(quiet);
     int rest = i;
     char path[PATH_MAX], rgame[PATH_MAX], roverlay[PATH_MAX];
+    if (!game[0]) return refuse("no game folder: pass --game DIR or set BN_GAME");
     if (!realpath(game, rgame)) return refuse("game folder not found");
     if (overlay[0] != '/') {
         char cwd[PATH_MAX], abs[PATH_MAX];

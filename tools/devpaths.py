@@ -3,7 +3,7 @@ import sys
 import unittest
 
 CACHES = os.path.expanduser("~/Library/Caches/BloodlinesPorter")
-GAME = os.path.expanduser("~/Games/Vampire Bloodlines (Windows)")
+GAME = os.environ.get("BN_GAME") or os.path.expanduser("~/Games/Vampire Bloodlines (Windows)")
 UP_INSTALLER = os.path.join(GAME, "VTMBup120.8.exe")
 
 
@@ -31,6 +31,10 @@ def export_dxvk_lib():
     os.environ.setdefault("RT_DXVK_LIB", dxvk_lib())
 
 
+def export_game():
+    os.environ.setdefault("BN_GAME", GAME)
+
+
 def refdir():
     return os.environ.get("BN_REFDIR") or "."
 
@@ -41,7 +45,7 @@ def ghidra_project():
 
 class Test(unittest.TestCase):
     def setUp(self):
-        self.saved = {k: os.environ.pop(k, None) for k in ("BN_DEV_HOME", "RT_DXVK_LIB")}
+        self.saved = {k: os.environ.pop(k, None) for k in ("BN_DEV_HOME", "RT_DXVK_LIB", "BN_GAME")}
 
     def tearDown(self):
         for k, v in self.saved.items():
@@ -110,8 +114,15 @@ class Test(unittest.TestCase):
 
     def test_game_kept(self):
         home = os.path.expanduser("~")
-        self.assertEqual(GAME, home + "/Games/Vampire Bloodlines (Windows)")
+        self.assertEqual(GAME, self.saved["BN_GAME"] or home + "/Games/Vampire Bloodlines (Windows)")
         self.assertEqual(UP_INSTALLER, GAME + "/VTMBup120.8.exe")
+
+    def test_export_game_keeps_existing(self):
+        export_game()
+        self.assertEqual(os.environ["BN_GAME"], GAME)
+        os.environ["BN_GAME"] = "/mine"
+        export_game()
+        self.assertEqual(os.environ["BN_GAME"], "/mine")
 
 
 if __name__ == "__main__":

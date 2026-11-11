@@ -398,8 +398,8 @@ typedef struct {
     char lib[1024], loader[1024], icd[1024];
     int bundled;
 } rt_gfx_paths;
-void rt_gfx_resolve_paths(const char *exe, const char *home, const char *e_lib, const char *e_loader, const char *e_icd,
-                          rt_gfx_paths *o);
+void rt_gfx_resolve_paths(const char *exe, const char *home, const char *e_dev, const char *e_lib, const char *e_loader,
+                          const char *e_icd, rt_gfx_paths *o);
 
 int rt_up_init(const char *args);
 int rt_up_parse_mod(const char *args, char *mod, size_t n);

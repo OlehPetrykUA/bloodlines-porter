@@ -828,12 +828,12 @@ class CollectLogs(Base):
         self.overlay = self.home / "Library/Application Support/BloodlinesNative"
         self.crash = self.home / "Library/Logs/DiagnosticReports"
         self.fixture()
-        self.L("set", "--game", str(self.home / "Games/VTMB"))
+        self.L("set", "--game", str(self.home / "Steam/Bloodlines"))
         code, out, _ = self.L("collect-logs", "--bundle", str(self.bundle), "--out-dir", str(self.out), "--since", str(T0 + 500))
         self.assertEqual(code, 0)
         z = zipfile.ZipFile(out.strip())
         info = z.read("info.txt").decode()
-        self.assertIn("~/Games/VTMB", info)
+        self.assertIn("~/Steam/Bloodlines", info)
         for n in z.namelist():
             d = z.read(n)
             self.assertNotIn("Олег".encode(), d, n)

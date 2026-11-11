@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.join(REPO, "tools"))
 import devpaths
 
 devpaths.export_dxvk_lib()
+devpaths.export_game()
 
 import pe as pefile
 import test_plan

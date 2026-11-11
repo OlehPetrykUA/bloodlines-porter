@@ -506,10 +506,10 @@ final class PatchTests: XCTestCase {
 final class FinalScreenTests: XCTestCase {
     func testFinalRowsAreTheFourApprovedOnes() {
         let home = "/Users/x"
-        XCTAssertEqual(finalRows(app: Names.app(home: home), game: "/Users/x/Games/VTMB/vanilla", installer: nil, home: home), [
+        XCTAssertEqual(finalRows(app: Names.app(home: home), game: "/Users/x/Steam/Bloodlines", installer: nil, home: home), [
             FinalRow(label: "App", paths: ["~/Games/Vampire Bloodlines.app"], note: "About 3 GB, game data inside"),
             FinalRow(label: "Saves, settings, logs", paths: ["~/Library/Application Support/Vampire Bloodlines"], note: ""),
-            FinalRow(label: "Windows game folder", paths: ["~/Games/VTMB/vanilla"], note: "Left as it is"),
+            FinalRow(label: "Windows game folder", paths: ["~/Steam/Bloodlines"], note: "Left as it is"),
             FinalRow(label: "Build cache", paths: ["~/Library/Caches/Vampire Bloodlines"], note: "Deleted after install"),
         ])
         let patched = finalRows(app: Names.app(home: home), game: "/Volumes/A/Game", installer: "/Users/x/Downloads/VTMBup120.8.exe", home: home)

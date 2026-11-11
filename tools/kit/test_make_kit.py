@@ -273,7 +273,7 @@ class Leaks(Base):
         self.assertTrue(any("__pycache__/os.cpython-313.pyc holds the host path /Users/cutter/" in e for e in self.leaks()), self.leaks())
 
     def test_cutter_home_in_shipped_source_fails(self):
-        write(self.kit / "src/tools/x.py", "p = '%s/Games/VTMB/vanilla'\n" % self.HOME)
+        write(self.kit / "src/tools/x.py", "p = '%s/Steam/Bloodlines'\n" % self.HOME)
         self.assertTrue(any("src/tools/x.py holds the host path" in e for e in self.leaks()), self.leaks())
 
     def test_kit_folder_path_fails(self):

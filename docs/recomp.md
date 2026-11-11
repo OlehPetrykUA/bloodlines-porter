@@ -4,11 +4,12 @@
 
 ## Where things live
 
-`GAME="$HOME/Games/Vampire Bloodlines (Windows)"` holds the game (the files directly in it, read-only) and the installer `VTMBup120.8.exe` (patch 12.0.8). Everything for development lives under `DEV=~/Library/Caches/BloodlinesPorter/dev` (not under `~/Library/Caches/Vampire Bloodlines`, which the porter empties after every install) (override the base with `BN_DEV_HOME`; the paths are defined once in `tools/devpaths.py`):
+`GAME` holds the game (the files directly in it, read-only; `BN_GAME`, else `$HOME/Games/Vampire Bloodlines (Windows)` in `tools/devpaths.py`) and the installer `VTMBup120.8.exe` (patch 12.0.8). Everything for development lives under `DEV=~/Library/Caches/BloodlinesPorter/dev` (not under `~/Library/Caches/Vampire Bloodlines`, which the porter empties after every install) (override the base with `BN_DEV_HOME`; the paths are defined once in `tools/devpaths.py`):
 
 | What | Where | Override |
 |---|---|---|
 | Dev builds | `$DEV/build/<name>` (default build `all`) | `--out`, `--exe` |
+| Game folder | `$GAME` | `BN_GAME`, `--game` |
 | dxvk prefix | `$DEV/dxvk/inst` | `RT_DXVK_LIB` |
 | Harness Python (capstone) | `$DEV/venv` | |
 | Vendored sources (dxvk, xboxrecomp) | `$DEV/vendor` | |
@@ -17,7 +18,7 @@
 | Reference captures and menu files | none (current directory) | `BN_REFDIR`, `--refdir` |
 | Ghidra names export | none; skipped | `BN_GHIDRA_PROJECT` |
 
-Run the commands below from the repo root. Bare dev runs: pass --game "$GAME".
+Run the commands below from the repo root. The runtime has no built-in game folder: `--run` takes `--game DIR`, else `BN_GAME`, and refuses without either (the harness sets `BN_GAME` from `tools/devpaths.py`); the self-tests fall back to the current directory.
 
 ## Rebuild command
 
@@ -507,7 +508,7 @@ M selftest | cases | boot | menu | soak | displays | compare PNG REF --mask JSON
 - `--gfx dxvk` (default) loads the bridge and dxvk. `--gfx null` keeps M3's null device, loads nothing from Vulkan and creates no Vulkan window. The stage 1 line prints the mode.
 - `--until menu` exits 0 at max(5, S + 2) s after stage 11, where S is `--capture-after` (5 s without it). `--capture-after S` writes `<overlay>/shots/menu-<UTC>.png` from the back buffer in the first Present S seconds after stage 11 (`GetRenderTargetData` into a system-memory surface, then `SDL_SavePNG`). `--close-after` still counts from stage 8. `--display N` puts the window on SDL display N and refuses (exit 1) when it does not exist.
 - The default argument list is `-window -w 1280 -h 1024 -dxlevel 90 -nosound -nojoy -noip -nolan -dev -condebug +mm_verbose 1 +echo M3_CONSOLE_READY`: M3's list with `-console` removed so the console does not cover the menu, `-h 1024` as M3 measured, and `-dxlevel 90` and `+mm_verbose 1` added. `--guest-quiet` drops `+mm_verbose 1` and `-condebug`; its stage 1 line carries `guest-quiet` and stage 11 does not fire.
-- Environment the runtime sets before the window exists, each without overwriting a value that is already set (logged as `rt: gfx env NAME=value (set|kept)`): `DXVK_WSI_DRIVER=SDL3`; `VK_DRIVER_FILES` (the KosmicKrisp ICD, `/opt/homebrew/opt/mesa/share/vulkan/icd.d/kosmickrisp_mesa_icd.aarch64.json`); `DXVK_CONFIG="d3d9.memoryTrackTest = True; d3d9.maxAvailableMemory = 1024; d3d9.deferSurfaceCreation = True"` (the fork's own Bloodlines profile matches `\vampire.exe$` and cannot match this binary); `MESA_KK_DEBUG=force_robustness`; `DXVK_LOG_PATH=<overlay>/logs`; `DXVK_SHADER_CACHE_PATH=<overlay>/cache/dxvk`; `MESA_SHADER_CACHE_DIR=<overlay>/cache/mesa`, so an uninstall leaves nothing in `~/.cache` and a scratch overlay really starts cold; and the SDL hint `SDL_HINT_VULKAN_LIBRARY` = `/opt/homebrew/opt/vulkan-loader/lib/libvulkan.1.dylib`. The dxvk library is opened with `dlopen` from `RT_DXVK_LIB`, else, for a dev build outside an `.app`, a fixed default inside the bridge that is not used any more. The harness (`tools/devpaths.py`) sets `RT_DXVK_LIB=$DEV/dxvk/inst/lib/libdxvk_d3d9.0.dylib` unless it is already set; set it yourself for a hand run. `RT_GFX_CHECK=1` turns on the bridge's extra checks.
+- Environment the runtime sets before the window exists, each without overwriting a value that is already set (logged as `rt: gfx env NAME=value (set|kept)`): `DXVK_WSI_DRIVER=SDL3`; `VK_DRIVER_FILES` (the KosmicKrisp ICD, `/opt/homebrew/opt/mesa/share/vulkan/icd.d/kosmickrisp_mesa_icd.aarch64.json`); `DXVK_CONFIG="d3d9.memoryTrackTest = True; d3d9.maxAvailableMemory = 1024; d3d9.deferSurfaceCreation = True"` (the fork's own Bloodlines profile matches `\vampire.exe$` and cannot match this binary); `MESA_KK_DEBUG=force_robustness`; `DXVK_LOG_PATH=<overlay>/logs`; `DXVK_SHADER_CACHE_PATH=<overlay>/cache/dxvk`; `MESA_SHADER_CACHE_DIR=<overlay>/cache/mesa`, so an uninstall leaves nothing in `~/.cache` and a scratch overlay really starts cold; and the SDL hint `SDL_HINT_VULKAN_LIBRARY` = `/opt/homebrew/opt/vulkan-loader/lib/libvulkan.1.dylib`. The dxvk library is opened with `dlopen` from `RT_DXVK_LIB`, else, for a dev build outside an `.app`, `$BN_DEV_HOME/dxvk/inst/lib/libdxvk_d3d9.0.dylib` (`BN_DEV_HOME` defaults to `~/Library/Caches/BloodlinesPorter/dev`). The harness (`tools/devpaths.py`) sets `RT_DXVK_LIB=$DEV/dxvk/inst/lib/libdxvk_d3d9.0.dylib` unless it is already set; set it yourself for a hand run. `RT_GFX_CHECK=1` turns on the bridge's extra checks.
 - `<overlay>/files/Vampire/vidcfg.bin` is deleted, with a log line, when its device ID is 16 zero bytes (the null device's), so the engine re-detects the real device.
 - The run is refused (exit 1) only when the dxvk library, `libvulkan.1.dylib` or the KosmicKrisp manifest is missing. That the loaded driver is KosmicKrisp is checked after stage 9 from the loaded images; a failure there is exit 15, as is a device-lost state or a blocked bridge call over 5 s in a dev run and over 120 s in a player build (a slow cold shader start is not a hang there). A d3d9 call from any thread but the guest primary thread stops with exit 5.
 

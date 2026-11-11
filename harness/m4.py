@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.join(HERE, "..", "tools"))
 import devpaths
 
 devpaths.export_dxvk_lib()
+devpaths.export_game()
 
 CRASHES = os.path.expanduser("~/Library/Logs/DiagnosticReports")
 X_DEFAULT = devpaths.build("all", "meson", "bloodlines-native")

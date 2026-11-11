@@ -16,7 +16,7 @@ final class SnapshotTests: XCTestCase {
         let m = KitModel(config: config)
         m.status = StatusInfo(lines: ["state: " + status, "subtitles: on", "aspect: default", "unofficial patch: off"])
         var s = Settings()
-        s.game = "~/Games/VTMB/vanilla"
+        s.game = "~/Steam/Bloodlines"
         m.settings = s
         m.checkLine = "game ok: patch 1.2, 1,204 files (38 s)"
         edit(m)
@@ -62,7 +62,7 @@ final class SnapshotTests: XCTestCase {
         let md5 = "dd8951ce97fb61aaddec2ad73607d201"
         let shots: [(String, KitModel)] = [
             ("setup-1-no-game", model(status: "no-game") { $0.settings.game = ""; $0.checkLine = nil }),
-            ("setup-2-folder-invalid", model(status: "check-failed") { $0.folderFailure = ("~/Games/VTMB/vanilla", "is not a complete, unmodified Bloodlines 1.2 copy", ["missing: Vampire/pack000.vpk", "changed: Bin/engine.dll", "unreadable: Bin/[file]"]) }),
+            ("setup-2-folder-invalid", model(status: "check-failed") { $0.folderFailure = ("~/Steam/Bloodlines", "is not a complete, unmodified Bloodlines 1.2 copy", ["missing: Vampire/pack000.vpk", "changed: Bin/engine.dll", "unreadable: Bin/[file]"]) }),
             ("setup-3-verifying", model { $0.activity = .verifying; $0.progress = verify }),
             ("setup-4-needs-tools", model { $0.toolsMissing = true; $0.settings.game = ""; $0.checkLine = nil }),
             ("build-1-not-built", model(installed: false)),
