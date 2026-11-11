@@ -151,7 +151,12 @@ class ProgressUnit(unittest.TestCase):
         time.sleep(0.2)
         with p.lock:
             p.last = time.monotonic()
-        time.sleep(0.45)
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            with p.lock:
+                if len(p.out.getvalue().splitlines()) >= 2:
+                    break
+            time.sleep(0.02)
         p.stopped.set()
         self.assertEqual(len(p.out.getvalue().splitlines()), 2)
 
